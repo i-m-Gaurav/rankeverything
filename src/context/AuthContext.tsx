@@ -5,12 +5,14 @@ interface AuthUser {
   id: string;
   name: string;
   email: string;
+  image?: string;
 }
 
 interface AuthContextType {
   user: AuthUser | null;
   login: (email: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -38,6 +40,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         id: session.data.user.id,
         name: session.data.user.name,
         email: session.data.user.email,
+        image: session.data.user.image ?? undefined,
       }
     : null;
 
@@ -72,6 +75,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const signInWithGoogle = async () => {
+    setIsLoading(true);
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: window.location.origin,
+      });
+    } catch (err) {
+      console.error('Google sign-in error:', err);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const logout = () => {
     authClient.signOut();
   };
@@ -82,6 +100,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         user,
         login,
         register,
+        signInWithGoogle,
         logout,
         isLoading: isLoading || session.isPending,
       }}

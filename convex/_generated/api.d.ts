@@ -13,6 +13,9 @@ import type * as categories from "../categories.js";
 import type * as http from "../http.js";
 import type * as items from "../items.js";
 import type * as seed from "../seed.js";
+import type * as seedNew from "../seedNew.js";
+import type * as seedTech from "../seedTech.js";
+import type * as users from "../users.js";
 import type * as votes from "../votes.js";
 
 import type {
@@ -27,6 +30,9 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   items: typeof items;
   seed: typeof seed;
+  seedNew: typeof seedNew;
+  seedTech: typeof seedTech;
+  users: typeof users;
   votes: typeof votes;
 }>;
 

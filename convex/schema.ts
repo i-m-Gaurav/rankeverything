@@ -2,6 +2,17 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+  // App users (synced from Better Auth on login)
+  users: defineTable({
+    authId: v.string(),       // identity.subject from Better Auth
+    name: v.string(),
+    email: v.string(),
+    image: v.optional(v.string()),
+    provider: v.optional(v.string()), // "email" | "google"
+  })
+    .index("by_authId", ["authId"])
+    .index("by_email", ["email"]),
+
   categories: defineTable({
     name: v.string(),
     slug: v.string(),

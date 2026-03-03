@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, type ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, type ReactNode } from 'react';
+import { useMutation } from 'convex/react';
+import { api } from '../../convex/_generated/api';
 import { authClient } from '../lib/auth-client';
 
 interface AuthUser {
@@ -34,6 +36,8 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const session = authClient.useSession();
   const [isLoading, setIsLoading] = useState(false);
+  const syncUser = useMutation(api.users.syncUser);
+  const hasSynced = useRef<string | null>(null);
 
   const user: AuthUser | null = session.data?.user
     ? {
@@ -43,6 +47,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         image: session.data.user.image ?? undefined,
       }
     : null;
+
+  // Sync user to our database whenever session changes
+  useEffect(() => {
+    if (user && hasSynced.current !== user.id) {
+      hasSynced.current = user.id;
+      syncUser({
+        name: user.name || 'Anonymous',
+        email: user.email,
+        image: user.image,
+        provider: user.image ? 'google' : 'email', // Google users typically have an image
+      }).catch((err) => {
+        console.error('Failed to sync user:', err);
+        // Don't block the UI if sync fails
+      });
+    }
+  }, [user, syncUser]);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
@@ -91,6 +111,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
+    hasSynced.current = null;
     authClient.signOut();
   };
 

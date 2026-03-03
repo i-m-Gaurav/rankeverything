@@ -21,11 +21,6 @@ const Header: React.FC = () => {
           <span className="logo-text">RankEverything</span>
         </Link>
 
-        <nav className="nav">
-          <Link to="/" className="nav-link">Home</Link>
-          <Link to="/categories" className="nav-link">Categories</Link>
-        </nav>
-
         <div className="auth-buttons">
           {/* Theme Toggle */}
           <button

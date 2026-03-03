@@ -1,7 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
 
-:root {
-  /* Palette: Deep obsidian + molten gold */
+/* ═══════════════════════════════════════════
+   DARK THEME (default)
+   ═══════════════════════════════════════════ */
+:root,
+[data-theme="dark"] {
   --bg-void: #08080c;
   --bg-deep: #0e0e14;
   --bg-surface: #151520;
@@ -34,6 +41,58 @@
   --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
   --shadow-glow: 0 0 40px rgba(245, 178, 45, 0.12);
 
+  --noise-opacity: 0.03;
+  --header-bg: rgba(8, 8, 12, 0.75);
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+}
+
+/* ═══════════════════════════════════════════
+   LIGHT THEME
+   ═══════════════════════════════════════════ */
+[data-theme="light"] {
+  --bg-void: #f5f3ef;
+  --bg-deep: #edeae4;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f9f8f6;
+  --bg-glass: rgba(255, 255, 255, 0.7);
+
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-medium: rgba(0, 0, 0, 0.1);
+  --border-accent: rgba(200, 140, 20, 0.35);
+
+  --text-primary: #1a1816;
+  --text-secondary: #5c5768;
+  --text-muted: #9590a0;
+  --text-inverse: #f5f3ef;
+
+  --accent-gold: #d4960e;
+  --accent-gold-dim: rgba(212, 150, 14, 0.1);
+  --accent-gold-glow: rgba(212, 150, 14, 0.25);
+  --accent-amber: #c47e08;
+  --accent-rose: #e11d48;
+  --accent-emerald: #059669;
+  --accent-violet: #7c3aed;
+
+  --gradient-hero: linear-gradient(165deg, #f5f3ef 0%, #edeae4 35%, #f0ece5 70%, #f5f3ef 100%);
+  --gradient-gold: linear-gradient(135deg, #d4960e, #c47e08);
+  --gradient-card: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 243, 239, 0.98) 100%);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 40px rgba(212, 150, 14, 0.08);
+
+  --noise-opacity: 0.015;
+  --header-bg: rgba(245, 243, 239, 0.8);
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.12);
+}
+
+/* ═══════════════════════════════════════════
+   SHARED BASE
+   ═══════════════════════════════════════════ */
+:root {
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 20px;
@@ -66,6 +125,7 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   min-height: 100vh;
+  transition: background 0.35s ease, color 0.35s ease;
 }
 
 /* Subtle noise texture overlay */
@@ -76,6 +136,7 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 9999;
+  opacity: var(--noise-opacity, 0.03);
 }
 
 #root {
@@ -101,11 +162,11 @@ a:hover {
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-medium);
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }
 
@@ -185,4 +246,19 @@ a:hover {
 ::selection {
   background: var(--accent-gold-dim);
   color: var(--text-primary);
+}
+
+/* ─── Theme transition ─── */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, box-shadow;
+  transition-duration: 0.25s;
+  transition-timing-function: ease;
+}
+
+/* Override for elements that need instant transitions (inputs, etc.) */
+input, button, a {
+  transition-property: background-color, border-color, box-shadow, color, transform;
+  transition-duration: 0.2s;
 }
